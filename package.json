@@ -1,0 +1,27 @@
+{
+  "name": "fintrack-api",
+  "version": "0.1.0",
+  "description": "API REST de finanças pessoais — controle de receitas, despesas e relatórios",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pecinallib/fintrack-api.git"
+  },
+  "keywords": [
+    "nodejs",
+    "api",
+    "rest",
+    "finance"
+  ],
+  "author": "Matheus Bastos Pecinalli",
+  "license": "MIT",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/pecinallib/fintrack-api/issues"
+  },
+  "homepage": "https://github.com/pecinallib/fintrack-api#readme"
+}
