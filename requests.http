@@ -1,0 +1,42 @@
+### Health Check
+GET http://localhost:3000/
+
+### Listar transações
+GET http://localhost:3000/transactions
+
+### Criar transação (receita)
+POST http://localhost:3000/transactions
+Content-Type: application/json
+
+{
+  "title": "Salário",
+  "amount": 3000,
+  "type": "income",
+  "category": "Trabalho"
+}
+
+### Criar transação (despesa)
+POST http://localhost:3000/transactions
+Content-Type: application/json
+
+{
+  "title": "Aluguel",
+  "amount": 800,
+  "type": "expense",
+  "category": "Moradia"
+}
+
+### Buscar transação por ID
+GET http://localhost:3000/transactions/1
+
+### Atualizar transação
+PUT http://localhost:3000/transactions/1
+Content-Type: application/json
+
+{
+  "title": "Salário atualizado",
+  "amount": 3500
+}
+
+### Deletar transação
+DELETE http://localhost:3000/transactions/1
