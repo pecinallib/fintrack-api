@@ -1,28 +1,24 @@
-import { createServer } from 'node:http';
+import express from 'express';
 
-const server = createServer((req, res) => {
-  const { method, url } = req;
-
-  // Seta o header pra JSON em todas as respostas
-  res.setHeader('Content-Type', 'application/json');
-
-  if (method === 'GET' && url === '/') {
-    res.writeHead(200);
-    return res.end(
-      JSON.stringify({
-        message: 'FinTrack API rodando',
-        version: '0.1.0',
-      }),
-    );
-  }
-
-  // Qualquer outra rota = 404
-  res.writeHead(404);
-  return res.end(JSON.stringify({ error: 'Rota não encontrada' }));
-});
-
+const app = express();
 const PORT = 3000;
 
-server.listen(PORT, () => {
+// Middleware pra entender JSON no body das requests
+app.use(express.json());
+
+// Rota de health check
+app.get('/', (req, res) => {
+  return res.json({
+    message: 'FinTrack API',
+    version: '0.1.0',
+  });
+});
+
+app.use((req, res) => {
+  return res.status(404).json({ error: 'Rota não encontrada' });
+});
+
+// Inicia o servidor
+app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
