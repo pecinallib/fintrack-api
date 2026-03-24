@@ -23,5 +23,8 @@
   "bugs": {
     "url": "https://github.com/pecinallib/fintrack-api/issues"
   },
-  "homepage": "https://github.com/pecinallib/fintrack-api#readme"
+  "homepage": "https://github.com/pecinallib/fintrack-api#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  }
 }
