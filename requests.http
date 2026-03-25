@@ -75,3 +75,46 @@ Content-Type: application/json
 
 ### Deletar categoria
 DELETE http://localhost:3000/categories/1
+
+
+
+### ========== AUTENTICAÇÃO ==========
+
+### Registrar usuário
+POST http://localhost:3000/auth/register
+Content-Type: application/json
+
+{
+  "name": "Codec",
+  "email": "codec@email.com",
+  "password": "123456"
+}
+
+### Login
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+  "email": "codec@email.com",
+  "password": "123456"
+}
+
+### ========== ROTAS PROTEGIDAS (cole o token do login) ==========
+
+### Listar transações (com token)
+GET http://localhost:3000/transactions
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJjb2RlY0BlbWFpbC5jb20iLCJpYXQiOjE3NzQ0Nzg4NjYsImV4cCI6MTc3NTA4MzY2Nn0.GOdPrdYytIatA7HBrATQUeO9K_-munCEqqEUmmVuE6c
+
+### Criar transação (com token)
+POST http://localhost:3000/transactions
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJjb2RlY0BlbWFpbC5jb20iLCJpYXQiOjE3NzQ0Nzg4NjYsImV4cCI6MTc3NTA4MzY2Nn0.GOdPrdYytIatA7HBrATQUeO9K_-munCEqqEUmmVuE6c
+
+{
+  "title": "Emprestimo",
+  "amount": 10,
+  "type": "income"
+}
+
+### Teste sem token (deve dar 401)
+GET http://localhost:3000/transactions
