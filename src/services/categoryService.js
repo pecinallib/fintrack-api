@@ -14,6 +14,14 @@ export async function findById(id) {
 }
 
 export async function create({ name, userId }) {
+  const existing = await prisma.category.findFirst({
+    where: { name, userId },
+  });
+
+  if (existing) {
+    throw new Error('CATEGORY_ALREADY_EXISTS');
+  }
+
   return await prisma.category.create({
     data: { name, userId },
   });
