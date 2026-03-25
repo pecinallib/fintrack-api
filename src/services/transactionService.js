@@ -1,52 +1,65 @@
-let transactions = [];
-let nextId = 1;
+import prisma from '../utils/prisma.js';
 
-export function findAll() {
-  return transactions;
+export async function findAll(userId) {
+  return await prisma.transaction.findMany({
+    where: { userId },
+    include: { category: true },
+    orderBy: { createdAt: 'desc' },
+  });
 }
 
-export function findById(id) {
-  return transactions.find((t) => t.id === id);
+export async function findById(id) {
+  return await prisma.transaction.findUnique({
+    where: { id },
+    include: { category: true },
+  });
 }
 
-export function create({ title, amount, type, category }) {
-  const transaction = {
-    id: nextId++,
-    title,
-    amount: Number(amount),
-    type,
-    category: category || 'Outros',
-    createdAt: new Date().toISOString(),
-  };
+export async function create({ title, amount, type, categoryId, userId }) {
+  if (categoryId) {
+    const category = await prisma.category.findUnique({
+      where: { id: categoryId },
+    });
 
-  transactions.push(transaction);
-  return transaction;
+    if (!category) {
+      throw new Error('CATEGORY_NOT_FOUND');
+    }
+  }
+
+  return await prisma.transaction.create({
+    data: {
+      title,
+      amount,
+      type,
+      userId,
+      categoryId: categoryId || null,
+    },
+    include: { category: true },
+  });
 }
 
-export function update(id, data) {
-  const index = transactions.findIndex((t) => t.id === id);
+export async function update(id, data) {
+  const transaction = await prisma.transaction.findUnique({ where: { id } });
 
-  if (index === -1) return null;
+  if (!transaction) return null;
 
-  transactions[index] = {
-    ...transactions[index],
-    title: data.title || transactions[index].title,
-    amount:
-      data.amount !== undefined
-        ? Number(data.amount)
-        : transactions[index].amount,
-    type: data.type || transactions[index].type,
-    category: data.category || transactions[index].category,
-  };
-
-  return transactions[index];
+  return await prisma.transaction.update({
+    where: { id },
+    data: {
+      title: data.title || undefined,
+      amount: data.amount !== undefined ? data.amount : undefined,
+      type: data.type || undefined,
+    },
+    include: { category: true },
+  });
 }
 
-export function remove(id) {
-  const index = transactions.findIndex((t) => t.id === id);
+export async function remove(id) {
+  const transaction = await prisma.transaction.findUnique({ where: { id } });
 
-  if (index === -1) return null;
+  if (!transaction) return null;
 
-  const deleted = transactions.splice(index, 1)[0];
-  return deleted;
+  return await prisma.transaction.delete({
+    where: { id },
+  });
 }

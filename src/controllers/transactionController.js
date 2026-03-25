@@ -1,12 +1,12 @@
 import * as transactionService from '../services/transactionService.js';
 
-export function index(req, res) {
-  const transactions = transactionService.findAll();
+export async function index(req, res) {
+  const transactions = await transactionService.findAll(req.userId);
   return res.json(transactions);
 }
 
-export function show(req, res) {
-  const transaction = transactionService.findById(Number(req.params.id));
+export async function show(req, res) {
+  const transaction = await transactionService.findById(Number(req.params.id));
 
   if (!transaction) {
     return res.status(404).json({ error: 'Transação não encontrada' });
@@ -15,40 +15,23 @@ export function show(req, res) {
   return res.json(transaction);
 }
 
-export function store(req, res) {
-  const { title, amount, type, category } = req.body;
-
-  if (!title || amount === undefined || !type) {
-    return res
-      .status(400)
-      .json({ error: 'Campos obrigatórios: title, amount, type' });
+export async function store(req, res) {
+  try {
+    const transaction = await transactionService.create({
+      ...req.body,
+      userId: req.userId,
+    });
+    return res.status(201).json(transaction);
+  } catch (error) {
+    if (error.message === 'CATEGORY_NOT_FOUND') {
+      return res.status(400).json({ error: 'Categoria não encontrada' });
+    }
+    throw error;
   }
-
-  if (type !== 'income' && type !== 'expense') {
-    return res
-      .status(400)
-      .json({ error: "Type deve ser 'income' ou 'expense'" });
-  }
-
-  const transaction = transactionService.create({
-    title,
-    amount,
-    type,
-    category,
-  });
-  return res.status(201).json(transaction);
 }
 
-export function update(req, res) {
-  const { type } = req.body;
-
-  if (type && type !== 'income' && type !== 'expense') {
-    return res
-      .status(400)
-      .json({ error: "Type deve ser 'income' ou 'expense'" });
-  }
-
-  const transaction = transactionService.update(
+export async function update(req, res) {
+  const transaction = await transactionService.update(
     Number(req.params.id),
     req.body,
   );
@@ -60,8 +43,8 @@ export function update(req, res) {
   return res.json(transaction);
 }
 
-export function remove(req, res) {
-  const transaction = transactionService.remove(Number(req.params.id));
+export async function remove(req, res) {
+  const transaction = await transactionService.remove(Number(req.params.id));
 
   if (!transaction) {
     return res.status(404).json({ error: 'Transação não encontrada' });
