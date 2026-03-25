@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import helmet from 'helmet';
 import authRoutes from './routes/authRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
@@ -9,6 +10,7 @@ import { authGuard } from './middlewares/auth.js';
 const app = express();
 const PORT = 3000;
 
+app.use(helmet());
 app.use(express.json());
 
 // Rota pública
