@@ -12,7 +12,7 @@ Content-Type: application/json
   "title": "Salário",
   "amount": 3000,
   "type": "income",
-  "categoryId": 2
+  "categoryId": 3
 }
 
 ### Criar transação (despesa)
@@ -20,10 +20,10 @@ POST http://localhost:3000/transactions
 Content-Type: application/json
 
 {
-  "title": "Aluguel",
-  "amount": 800,
+  "title": "Mercado",
+  "amount": 450,
   "type": "expense",
-  "category": "Moradia"
+  "categoryId": 5
 }
 
 ### Buscar transação por ID
@@ -40,6 +40,12 @@ Content-Type: application/json
 
 ### Deletar transação
 DELETE http://localhost:3000/transactions/1
+
+
+### ========== RESUMO FINANCEIRO ==========
+
+### Ver resumo
+GET http://localhost:3000/transactions/summary
 
 
 

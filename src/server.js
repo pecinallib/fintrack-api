@@ -1,5 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
+
+import summaryRoutes from './routes/summaryRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 
@@ -15,6 +17,7 @@ app.get('/', (req, res) => {
   });
 });
 
+app.use('/transactions/summary', summaryRoutes);
 app.use('/transactions', transactionRoutes);
 app.use('/categories', categoryRoutes);
 
