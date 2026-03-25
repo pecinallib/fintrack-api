@@ -1,7 +1,7 @@
 import * as categoryService from '../services/categoryService.js';
 
 export async function index(req, res) {
-  const categories = await categoryService.findAll(1); // userId temporário
+  const categories = await categoryService.findAll(req.userId);
   return res.json(categories);
 }
 
@@ -19,7 +19,7 @@ export async function store(req, res) {
   try {
     const category = await categoryService.create({
       name: req.body.name,
-      userId: 1,
+      userId: req.userId,
     });
 
     return res.status(201).json(category);

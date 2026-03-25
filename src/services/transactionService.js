@@ -1,7 +1,8 @@
 import prisma from '../utils/prisma.js';
 
-export async function findAll() {
+export async function findAll(userId) {
   return await prisma.transaction.findMany({
+    where: { userId },
     include: { category: true },
     orderBy: { createdAt: 'desc' },
   });
@@ -14,7 +15,7 @@ export async function findById(id) {
   });
 }
 
-export async function create({ title, amount, type, categoryId }) {
+export async function create({ title, amount, type, categoryId, userId }) {
   if (categoryId) {
     const category = await prisma.category.findUnique({
       where: { id: categoryId },
@@ -30,7 +31,7 @@ export async function create({ title, amount, type, categoryId }) {
       title,
       amount,
       type,
-      userId: 1,
+      userId,
       categoryId: categoryId || null,
     },
     include: { category: true },

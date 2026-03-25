@@ -1,7 +1,7 @@
 import * as transactionService from '../services/transactionService.js';
 
 export async function index(req, res) {
-  const transactions = await transactionService.findAll();
+  const transactions = await transactionService.findAll(req.userId);
   return res.json(transactions);
 }
 
@@ -17,7 +17,10 @@ export async function show(req, res) {
 
 export async function store(req, res) {
   try {
-    const transaction = await transactionService.create(req.body);
+    const transaction = await transactionService.create({
+      ...req.body,
+      userId: req.userId,
+    });
     return res.status(201).json(transaction);
   } catch (error) {
     if (error.message === 'CATEGORY_NOT_FOUND') {
