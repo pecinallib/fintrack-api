@@ -16,8 +16,15 @@ export async function show(req, res) {
 }
 
 export async function store(req, res) {
-  const transaction = await transactionService.create(req.body);
-  return res.status(201).json(transaction);
+  try {
+    const transaction = await transactionService.create(req.body);
+    return res.status(201).json(transaction);
+  } catch (error) {
+    if (error.message === 'CATEGORY_NOT_FOUND') {
+      return res.status(400).json({ error: 'Categoria não encontrada' });
+    }
+    throw error;
+  }
 }
 
 export async function update(req, res) {

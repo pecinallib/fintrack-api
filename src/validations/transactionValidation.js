@@ -10,7 +10,7 @@ export const createTransactionSchema = z.object({
   type: z.enum(['income', 'expense'], {
     errorMap: () => ({ message: "Type deve ser 'income' ou 'expense'" }),
   }),
-  category: z.string().optional(),
+  categoryId: z.number().int().positive().optional(),
 });
 
 export const updateTransactionSchema = z.object({

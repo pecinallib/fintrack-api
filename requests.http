@@ -12,7 +12,7 @@ Content-Type: application/json
   "title": "Salário",
   "amount": 3000,
   "type": "income",
-  "category": "Trabalho"
+  "categoryId": 2
 }
 
 ### Criar transação (despesa)
@@ -40,3 +40,32 @@ Content-Type: application/json
 
 ### Deletar transação
 DELETE http://localhost:3000/transactions/1
+
+
+
+### ========== CATEGORIAS ==========
+
+### Criar categoria
+POST http://localhost:3000/categories
+Content-Type: application/json
+
+{
+  "name": "Alimentação"
+}
+
+### Listar categorias
+GET http://localhost:3000/categories
+
+### Buscar categoria por ID
+GET http://localhost:3000/categories/1
+
+### Atualizar categoria
+PUT http://localhost:3000/categories/1
+Content-Type: application/json
+
+{
+  "name": "Alimentação e Bebidas"
+}
+
+### Deletar categoria
+DELETE http://localhost:3000/categories/1

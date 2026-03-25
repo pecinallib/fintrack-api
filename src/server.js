@@ -1,13 +1,13 @@
 import 'dotenv/config';
 import express from 'express';
 import transactionRoutes from './routes/transactionRoutes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 
-// Rota de health check
 app.get('/', (req, res) => {
   return res.json({
     message: 'FinTrack API rodando',
@@ -15,8 +15,8 @@ app.get('/', (req, res) => {
   });
 });
 
-// Rotas de transações
 app.use('/transactions', transactionRoutes);
+app.use('/categories', categoryRoutes);
 
 // 404 handler
 app.use((req, res) => {
