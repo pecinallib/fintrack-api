@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import transactionRoutes from './routes/transactionRoutes.js';
 
