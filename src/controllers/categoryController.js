@@ -16,12 +16,19 @@ export async function show(req, res) {
 }
 
 export async function store(req, res) {
-  const category = await categoryService.create({
-    name: req.body.name,
-    userId: 1, // temporário até ter autenticação
-  });
+  try {
+    const category = await categoryService.create({
+      name: req.body.name,
+      userId: 1,
+    });
 
-  return res.status(201).json(category);
+    return res.status(201).json(category);
+  } catch (error) {
+    if (error.message === 'CATEGORY_ALREADY_EXISTS') {
+      return res.status(409).json({ error: 'Categoria já existe' });
+    }
+    throw error;
+  }
 }
 
 export async function update(req, res) {
