@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/authRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
@@ -19,6 +20,16 @@ app.use(
     allowedHeaders: ['Content-Type', 'Authorization'],
   }),
 );
+
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // máximo 100 requests por IP a cada 15 min
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { error: 'Muitas requisições, tente novamente em 15 minutos' },
+});
+
+app.use(limiter);
 app.use(express.json());
 
 // Rota pública
