@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import express from 'express';
 import helmet from 'helmet';
+import cors from 'cors';
 import authRoutes from './routes/authRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
@@ -11,6 +12,13 @@ const app = express();
 const PORT = 3000;
 
 app.use(helmet());
+app.use(
+  cors({
+    origin: process.env.CORS_ORIGIN || '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+  }),
+);
 app.use(express.json());
 
 // Rota pública
