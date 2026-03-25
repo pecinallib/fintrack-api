@@ -16,38 +16,11 @@ export function show(req, res) {
 }
 
 export function store(req, res) {
-  const { title, amount, type, category } = req.body;
-
-  if (!title || amount === undefined || !type) {
-    return res
-      .status(400)
-      .json({ error: 'Campos obrigatórios: title, amount, type' });
-  }
-
-  if (type !== 'income' && type !== 'expense') {
-    return res
-      .status(400)
-      .json({ error: "Type deve ser 'income' ou 'expense'" });
-  }
-
-  const transaction = transactionService.create({
-    title,
-    amount,
-    type,
-    category,
-  });
+  const transaction = transactionService.create(req.body);
   return res.status(201).json(transaction);
 }
 
 export function update(req, res) {
-  const { type } = req.body;
-
-  if (type && type !== 'income' && type !== 'expense') {
-    return res
-      .status(400)
-      .json({ error: "Type deve ser 'income' ou 'expense'" });
-  }
-
   const transaction = transactionService.update(
     Number(req.params.id),
     req.body,
