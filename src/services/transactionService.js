@@ -14,14 +14,24 @@ export async function findById(id) {
   });
 }
 
-export async function create({ title, amount, type, category }) {
+export async function create({ title, amount, type, categoryId }) {
+  if (categoryId) {
+    const category = await prisma.category.findUnique({
+      where: { id: categoryId },
+    });
+
+    if (!category) {
+      throw new Error('CATEGORY_NOT_FOUND');
+    }
+  }
+
   return await prisma.transaction.create({
     data: {
       title,
       amount,
       type,
-      userId: 1, // temporário até ter autenticação
-      categoryId: null,
+      userId: 1,
+      categoryId: categoryId || null,
     },
     include: { category: true },
   });
