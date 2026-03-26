@@ -2,6 +2,7 @@ import 'dotenv/config';
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
+import activityLogRoutes from './routes/activityLogRoutes.js';
 import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/authRoutes.js';
 import transactionRoutes from './routes/transactionRoutes.js';
@@ -45,6 +46,8 @@ app.use('/auth', authRoutes);
 
 // Todas as rotas abaixo precisam de token
 app.use(authGuard);
+
+app.use('/activity', activityLogRoutes);
 
 app.use('/transactions/summary', summaryRoutes);
 app.use('/transactions', transactionRoutes);

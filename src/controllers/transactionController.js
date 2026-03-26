@@ -34,6 +34,7 @@ export async function update(req, res) {
   const transaction = await transactionService.update(
     Number(req.params.id),
     req.body,
+    req.userId,
   );
 
   if (!transaction) {
@@ -44,7 +45,10 @@ export async function update(req, res) {
 }
 
 export async function remove(req, res) {
-  const transaction = await transactionService.remove(Number(req.params.id));
+  const transaction = await transactionService.remove(
+    Number(req.params.id),
+    req.userId,
+  );
 
   if (!transaction) {
     return res.status(404).json({ error: 'Transação não encontrada' });
