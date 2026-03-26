@@ -10,7 +10,7 @@ API REST de finanças pessoais — controle de receitas, despesas e relatórios.
 
 ## 📋 Sobre
 
-O FinTrack é uma API completa para gerenciamento de finanças pessoais. Permite registrar receitas e despesas, organizar por categorias, e visualizar resumos financeiros detalhados. Construída com foco em boas práticas, segurança e arquitetura profissional.
+O FinTrack é uma API completa para gerenciamento de finanças pessoais. Permite registrar receitas e despesas, organizar por categorias, visualizar resumos financeiros com filtro por período, e acompanhar o histórico de todas as ações realizadas. Construída com foco em boas práticas, segurança e arquitetura profissional.
 
 ## 🚀 Tecnologias
 
@@ -27,6 +27,7 @@ O FinTrack é uma API completa para gerenciamento de finanças pessoais. Permite
 ```
 src/
 ├── controllers/       # Lógica de request/response
+│   ├── activityLogController.js
 │   ├── authController.js
 │   ├── categoryController.js
 │   ├── summaryController.js
@@ -35,11 +36,13 @@ src/
 │   ├── auth.js        # Guard de autenticação JWT
 │   └── validate.js    # Validação com Zod
 ├── routes/            # Definição de rotas
+│   ├── activityLogRoutes.js
 │   ├── authRoutes.js
 │   ├── categoryRoutes.js
 │   ├── summaryRoutes.js
 │   └── transactionRoutes.js
 ├── services/          # Lógica de negócio
+│   ├── activityLogService.js
 │   ├── authService.js
 │   ├── categoryService.js
 │   ├── summaryService.js
@@ -139,9 +142,16 @@ O servidor inicia em `http://localhost:3000`.
 
 ### Resumo financeiro (protegida)
 
-| Método | Rota                    | Descrição                                |
-| ------ | ----------------------- | ---------------------------------------- |
-| GET    | `/transactions/summary` | Resumo com totais e gastos por categoria |
+| Método | Rota                                                          | Descrição                                |
+| ------ | ------------------------------------------------------------- | ---------------------------------------- |
+| GET    | `/transactions/summary`                                       | Resumo com totais e gastos por categoria |
+| GET    | `/transactions/summary?dateFrom=2026-01-01&dateTo=2026-12-31` | Resumo filtrado por período              |
+
+### Histórico de ações (protegida)
+
+| Método | Rota        | Descrição                   |
+| ------ | ----------- | --------------------------- |
+| GET    | `/activity` | Últimas 20 ações do usuário |
 
 ## 🔒 Segurança
 
@@ -150,6 +160,10 @@ O servidor inicia em `http://localhost:3000`.
 - **Rate Limiting** — 100 requests por IP a cada 15 minutos
 - **bcrypt** — Hash de senhas com salt
 - **JWT** — Tokens com expiração de 7 dias
+
+## 📋 Histórico de Ações
+
+Todas as operações de CRUD em transações e categorias são registradas automaticamente na tabela `activity_logs`. O log inclui a ação realizada, a entidade afetada, detalhes descritivos em português (com valores, nomes anteriores e novos em edições), e o timestamp.
 
 ## 🧪 Testando a API
 
