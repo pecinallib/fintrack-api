@@ -1,4 +1,5 @@
 import prisma from '../utils/prisma.js';
+import * as activityLogService from './activityLogService.js';
 
 export async function findAll(userId) {
   return await prisma.transaction.findMany({
@@ -26,7 +27,7 @@ export async function create({ title, amount, type, categoryId, userId }) {
     }
   }
 
-  return await prisma.transaction.create({
+  const transaction = await prisma.transaction.create({
     data: {
       title,
       amount,
@@ -36,30 +37,59 @@ export async function create({ title, amount, type, categoryId, userId }) {
     },
     include: { category: true },
   });
+
+  await activityLogService.log({
+    action: 'create',
+    entity: 'transaction',
+    entityId: transaction.id,
+    details: `Criou transação "${title}" - R$ ${amount} (${type})`,
+    userId,
+  });
+
+  return transaction;
 }
 
-export async function update(id, data) {
+export async function update(id, data, userId) {
   const transaction = await prisma.transaction.findUnique({ where: { id } });
 
   if (!transaction) return null;
 
-  return await prisma.transaction.update({
+  const updated = await prisma.transaction.update({
     where: { id },
     data: {
       title: data.title || undefined,
       amount: data.amount !== undefined ? data.amount : undefined,
       type: data.type || undefined,
+      categoryId: data.categoryId !== undefined ? data.categoryId : undefined,
     },
     include: { category: true },
   });
+
+  await activityLogService.log({
+    action: 'update',
+    entity: 'transaction',
+    entityId: id,
+    details: `Editou transação "${updated.title}"`,
+    userId,
+  });
+
+  return updated;
 }
 
-export async function remove(id) {
+export async function remove(id, userId) {
   const transaction = await prisma.transaction.findUnique({ where: { id } });
 
   if (!transaction) return null;
 
-  return await prisma.transaction.delete({
-    where: { id },
+  await prisma.transaction.delete({ where: { id } });
+
+  await activityLogService.log({
+    action: 'delete',
+    entity: 'transaction',
+    entityId: id,
+    details: `Deletou transação "${transaction.title}"`,
+    userId,
   });
+
+  return transaction;
 }

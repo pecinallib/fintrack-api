@@ -118,3 +118,8 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiO
 
 ### Teste sem token (deve dar 401)
 GET http://localhost:3000/transactions
+
+
+### Listar histórico de ações
+GET http://localhost:3000/activity
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJjb2RlY0BlbWFpbC5jb20iLCJpYXQiOjE3NzQ1NTMyNzAsImV4cCI6MTc3NTE1ODA3MH0.6AUxjSmomG9F3ZcikDckA-5BjQguYP0tplu3eMLx9uM

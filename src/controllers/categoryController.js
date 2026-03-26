@@ -35,6 +35,7 @@ export async function update(req, res) {
   const category = await categoryService.update(
     Number(req.params.id),
     req.body,
+    req.userId,
   );
 
   if (!category) {
@@ -45,7 +46,10 @@ export async function update(req, res) {
 }
 
 export async function remove(req, res) {
-  const category = await categoryService.remove(Number(req.params.id));
+  const category = await categoryService.remove(
+    Number(req.params.id),
+    req.userId,
+  );
 
   if (!category) {
     return res.status(404).json({ error: 'Categoria não encontrada' });

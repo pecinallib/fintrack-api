@@ -1,4 +1,5 @@
 import prisma from '../utils/prisma.js';
+import * as activityLogService from './activityLogService.js';
 
 export async function findAll(userId) {
   return await prisma.category.findMany({
@@ -28,28 +29,56 @@ export async function create({ name, userId }) {
     throw new Error('CATEGORY_ALREADY_EXISTS');
   }
 
-  return await prisma.category.create({
+  const category = await prisma.category.create({
     data: { name, userId },
   });
+
+  await activityLogService.log({
+    action: 'create',
+    entity: 'category',
+    entityId: category.id,
+    details: `Criou categoria "${name}"`,
+    userId,
+  });
+
+  return category;
 }
 
-export async function update(id, { name }) {
+export async function update(id, { name }, userId) {
   const category = await prisma.category.findUnique({ where: { id } });
 
   if (!category) return null;
 
-  return await prisma.category.update({
+  const updated = await prisma.category.update({
     where: { id },
     data: { name },
   });
+
+  await activityLogService.log({
+    action: 'update',
+    entity: 'category',
+    entityId: id,
+    details: `Editou categoria para "${name}"`,
+    userId,
+  });
+
+  return updated;
 }
 
-export async function remove(id) {
+export async function remove(id, userId) {
   const category = await prisma.category.findUnique({ where: { id } });
 
   if (!category) return null;
 
-  return await prisma.category.delete({
-    where: { id },
+  await prisma.category.delete({ where: { id } });
+
+  await activityLogService.log({
+    action: 'delete',
+    entity: 'category',
+    entityId: id,
+    details: `Deletou categoria "${category.name}"`,
+    userId,
   });
+
+  return category;
 }

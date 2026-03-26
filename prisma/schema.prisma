@@ -16,6 +16,7 @@ model User {
 
   transactions Transaction[]
   categories   Category[]
+  activityLogs ActivityLog[]
 
   @@map("users")
 }
@@ -45,4 +46,18 @@ model Transaction {
   category Category? @relation(fields: [categoryId], references: [id])
 
   @@map("transactions")
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  entity    String
+  entityId  Int      @map("entity_id")
+  details   String?
+  createdAt DateTime @default(now()) @map("created_at")
+  userId    Int      @map("user_id")
+
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("activity_logs")
 }
