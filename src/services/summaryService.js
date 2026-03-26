@@ -1,8 +1,24 @@
 import prisma from '../utils/prisma.js';
 
-export async function getSummary(userId) {
+export async function getSummary(userId, { dateFrom, dateTo } = {}) {
+  const where = { userId };
+
+  if (dateFrom || dateTo) {
+    where.createdAt = {};
+
+    if (dateFrom) {
+      where.createdAt.gte = new Date(dateFrom);
+    }
+
+    if (dateTo) {
+      const end = new Date(dateTo);
+      end.setHours(23, 59, 59, 999);
+      where.createdAt.lte = end;
+    }
+  }
+
   const transactions = await prisma.transaction.findMany({
-    where: { userId },
+    where,
     include: { category: true },
   });
 
