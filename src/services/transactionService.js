@@ -1,6 +1,11 @@
 import prisma from '../utils/prisma.js';
 import * as activityLogService from './activityLogService.js';
 
+const TYPE_LABELS = {
+  income: 'Receita',
+  expense: 'Despesa',
+};
+
 export async function findAll(userId) {
   return await prisma.transaction.findMany({
     where: { userId },
@@ -42,7 +47,7 @@ export async function create({ title, amount, type, categoryId, userId }) {
     action: 'create',
     entity: 'transaction',
     entityId: transaction.id,
-    details: `Criou transação "${title}" - R$ ${amount} (${type})`,
+    details: `Criou ${TYPE_LABELS[type]}: "${title}" — R$ ${amount.toFixed(2)}`,
     userId,
   });
 
@@ -50,9 +55,12 @@ export async function create({ title, amount, type, categoryId, userId }) {
 }
 
 export async function update(id, data, userId) {
-  const transaction = await prisma.transaction.findUnique({ where: { id } });
+  const old = await prisma.transaction.findUnique({
+    where: { id },
+    include: { category: true },
+  });
 
-  if (!transaction) return null;
+  if (!old) return null;
 
   const updated = await prisma.transaction.update({
     where: { id },
@@ -65,11 +73,38 @@ export async function update(id, data, userId) {
     include: { category: true },
   });
 
+  const changes = [];
+
+  if (data.title && data.title !== old.title) {
+    changes.push(`título: "${old.title}" → "${data.title}"`);
+  }
+
+  if (data.amount !== undefined && data.amount !== old.amount) {
+    changes.push(
+      `valor: R$ ${old.amount.toFixed(2)} → R$ ${data.amount.toFixed(2)}`,
+    );
+  }
+
+  if (data.type && data.type !== old.type) {
+    changes.push(`tipo: ${TYPE_LABELS[old.type]} → ${TYPE_LABELS[data.type]}`);
+  }
+
+  if (data.categoryId !== undefined && data.categoryId !== old.categoryId) {
+    const oldCat = old.category?.name || 'Sem categoria';
+    const newCat = updated.category?.name || 'Sem categoria';
+    changes.push(`categoria: ${oldCat} → ${newCat}`);
+  }
+
+  const details =
+    changes.length > 0
+      ? `Editou transação "${updated.title}": ${changes.join(', ')}`
+      : `Editou transação "${updated.title}" (sem alterações)`;
+
   await activityLogService.log({
     action: 'update',
     entity: 'transaction',
     entityId: id,
-    details: `Editou transação "${updated.title}"`,
+    details,
     userId,
   });
 
@@ -87,7 +122,7 @@ export async function remove(id, userId) {
     action: 'delete',
     entity: 'transaction',
     entityId: id,
-    details: `Deletou transação "${transaction.title}"`,
+    details: `Deletou ${TYPE_LABELS[transaction.type]}: "${transaction.title}" — R$ ${transaction.amount.toFixed(2)}`,
     userId,
   });
 

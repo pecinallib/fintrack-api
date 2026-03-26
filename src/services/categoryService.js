@@ -45,20 +45,25 @@ export async function create({ name, userId }) {
 }
 
 export async function update(id, { name }, userId) {
-  const category = await prisma.category.findUnique({ where: { id } });
+  const old = await prisma.category.findUnique({ where: { id } });
 
-  if (!category) return null;
+  if (!old) return null;
 
   const updated = await prisma.category.update({
     where: { id },
     data: { name },
   });
 
+  const details =
+    old.name !== name
+      ? `Editou categoria: "${old.name}" → "${name}"`
+      : `Editou categoria "${name}" (sem alterações)`;
+
   await activityLogService.log({
     action: 'update',
     entity: 'category',
     entityId: id,
-    details: `Editou categoria para "${name}"`,
+    details,
     userId,
   });
 
