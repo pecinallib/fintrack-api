@@ -89,8 +89,8 @@ POST http://localhost:3000/auth/register
 Content-Type: application/json
 
 {
-  "name": "Codec",
-  "email": "codec@email.com",
+  "name": "Codec2",
+  "email": "pecinallipoker@gmail.com",
   "password": "123456"
 }
 
@@ -99,8 +99,8 @@ POST http://localhost:3000/auth/login
 Content-Type: application/json
 
 {
-  "email": "codec@email.com",
-  "password": "123456"
+  "email": "pecinallimarketing@gmail.com",
+  "password": "novaSenha123"
 }
 
 ### ========== ROTAS PROTEGIDAS (cole o token do login) ==========
@@ -135,3 +135,21 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiO
 ### Resumo com data
 GET http://localhost:3000/transactions/summary?dateFrom=2026-03-25&dateTo=2026-03-26
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwiZW1haWwiOiJjb2RlY0BlbWFpbC5jb20iLCJpYXQiOjE3NzQ1NTMyNzAsImV4cCI6MTc3NTE1ODA3MH0.6AUxjSmomG9F3ZcikDckA-5BjQguYP0tplu3eMLx9uM
+
+
+### Forgot Password
+POST http://localhost:3000/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "pecinallimarketing@gmail.com"
+}
+
+### Reset Password
+POST http://localhost:3000/auth/reset-password
+Content-Type: application/json
+
+{
+  "token": "41f91c39046076297665052761e737ed535c4c7cce918b12c8aee2e736bb090d",
+  "password": "novaSenha123"
+}
