@@ -21,6 +21,7 @@ O FinTrack é uma API completa para gerenciamento de finanças pessoais. Permite
 - **Autenticação:** JWT (jsonwebtoken + bcryptjs)
 - **Validação:** Zod 4
 - **Segurança:** Helmet, CORS, Rate Limiting
+- **Email:** Nodemailer (Gmail SMTP)
 
 ## 📁 Estrutura do Projeto
 
@@ -45,6 +46,7 @@ src/
 │   ├── activityLogService.js
 │   ├── authService.js
 │   ├── categoryService.js
+│   ├── emailService.js
 │   ├── summaryService.js
 │   └── transactionService.js
 ├── utils/             # Utilitários
@@ -84,6 +86,9 @@ cp .env.example .env
 DATABASE_URL="postgresql://postgres:sua_senha@localhost:5432/fintrack"
 JWT_SECRET="sua-chave-secreta"
 CORS_ORIGIN="http://localhost:5173"
+SMTP_EMAIL="seu-email@gmail.com"
+SMTP_PASSWORD="sua-app-password"
+FRONTEND_URL="http://localhost:5173"
 ```
 
 ### Banco de dados
@@ -115,10 +120,12 @@ O servidor inicia em `http://localhost:3000`.
 
 ### Autenticação (públicas)
 
-| Método | Rota             | Descrição                   |
-| ------ | ---------------- | --------------------------- |
-| POST   | `/auth/register` | Cadastrar novo usuário      |
-| POST   | `/auth/login`    | Fazer login e receber token |
+| Método | Rota                    | Descrição                          |
+| ------ | ----------------------- | ---------------------------------- |
+| POST   | `/auth/register`        | Cadastrar novo usuário             |
+| POST   | `/auth/login`           | Fazer login e receber token        |
+| POST   | `/auth/forgot-password` | Solicitar recuperação de senha     |
+| POST   | `/auth/reset-password`  | Redefinir senha com token do email |
 
 ### Transações (protegidas — requer Bearer Token)
 
@@ -160,6 +167,7 @@ O servidor inicia em `http://localhost:3000`.
 - **Rate Limiting** — 100 requests por IP a cada 15 minutos
 - **bcrypt** — Hash de senhas com salt
 - **JWT** — Tokens com expiração de 7 dias
+- **Password Reset** — Token SHA-256 com expiração de 15 minutos, tokens anteriores invalidados automaticamente
 
 ## 📋 Histórico de Ações
 
